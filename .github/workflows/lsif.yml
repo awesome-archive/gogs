@@ -1,0 +1,24 @@
+name: LSIF
+on: [push]
+jobs:
+  lsif-go:
+    if: github.repository == 'gogs/gogs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Generate LSIF data
+        uses: sourcegraph/lsif-go-action@master
+        with:
+          verbose: 'true'
+      - name: Upload LSIF data to sourcegraph.com
+        uses: sourcegraph/lsif-upload-action@master
+        continue-on-error: true
+        with:
+          endpoint: https://sourcegraph.com
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload LSIF data to sourcegraph.unknwon.cn
+        uses: sourcegraph/lsif-upload-action@master
+        continue-on-error: true
+        with:
+          endpoint: https://sourcegraph.unknwon.cn
+          github_token: ${{ secrets.GITHUB_TOKEN }}

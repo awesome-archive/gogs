@@ -1,11 +1,11 @@
 outPlattform=linux
 outArch=amd64
-outPath=./output_$outPlattform_$outArch
+outPath=./output_${outPlattform}_$outArch
 
 rm -rf $outPath
 mkdir $outPath
 
-CGO_ENABLED=0 GOOS=$outPlattform GOARCH=$outArch go build ../gogs.go
+CGO_ENABLED=0 GOOS=$outPlattform GOARCH=$outArch go build -buildmode=pie ../gogs.go
 chmod +x gogs
 mv gogs $outPath/
 

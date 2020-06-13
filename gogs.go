@@ -1,42 +1,42 @@
-// +build go1.4
+// +build go1.14
 
 // Copyright 2014 The Gogs Authors. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-// Gogs (Go Git Service) is a painless self-hosted Git Service.
+// Gogs is a painless self-hosted Git Service.
 package main
 
 import (
 	"os"
-	"runtime"
 
 	"github.com/urfave/cli"
+	log "unknwon.dev/clog/v2"
 
-	"github.com/gogits/gogs/cmd"
-	"github.com/gogits/gogs/modules/setting"
+	"gogs.io/gogs/internal/cmd"
+	"gogs.io/gogs/internal/conf"
 )
 
-const APP_VER = "0.9.99.0915"
-
 func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-	setting.AppVer = APP_VER
+	conf.App.Version = "0.12.0+dev"
 }
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "Gogs"
-	app.Usage = "Go Git Service: a painless self-hosted Git service"
-	app.Version = APP_VER
+	app.Usage = "A painless self-hosted Git service"
+	app.Version = conf.App.Version
 	app.Commands = []cli.Command{
-		cmd.CmdWeb,
-		cmd.CmdServ,
-		cmd.CmdUpdate,
-		cmd.CmdDump,
-		cmd.CmdCert,
-		cmd.CmdAdmin,
+		cmd.Web,
+		cmd.Serv,
+		cmd.Hook,
+		cmd.Cert,
+		cmd.Admin,
+		cmd.Import,
+		cmd.Backup,
+		cmd.Restore,
 	}
-	app.Flags = append(app.Flags, []cli.Flag{}...)
-	app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal("Failed to start application: %v", err)
+	}
 }
